@@ -1,0 +1,18 @@
+dbrp "sysmetricsdb"."autogen"
+
+stream
+    |from()
+        .measurement('mem')
+        .groupBy('host')
+    |window()
+        .period(1m)
+        .every(1m)
+    |mean('available_percent')
+    |alert()
+        .message('Host: {{ index .Tags "host" }} has a low percentage of available RAM: {{ index .Fields "mean" }}')
+        .warn(lambda: "mean" < 40.0)
+        .crit(lambda: "mean" < 20.0)
+        .alerta()
+            .resource('{{ index .Tags "host" }}/mem')
+            .event('memory overload')
+            .value('{{ index .Fields "mean" }}')

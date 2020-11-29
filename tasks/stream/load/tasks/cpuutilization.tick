@@ -1,0 +1,19 @@
+dbrp "sysmetricsdb"."autogen"
+
+stream
+    |from()
+        .measurement('cpu')
+        .groupBy('host', 'cpu')
+        .where(lambda: "cpu" != 'cpu-total')
+    |window()
+        .period(1m)
+        .every(1m)
+    |mean('usage_active')
+    |alert()
+        .message('Host: {{ index .Tags "host" }} has high cpu usage: {{ index .Fields "mean" }}')
+        .warn(lambda: "mean" > 75.0)
+        .crit(lambda: "mean" > 85.0)
+        .alerta()
+            .resource('{{ index .Tags "host" }}/{{ index .Tags "cpu" }}')
+            .event('cpu overload')
+            .value('{{ index .Fields "mean" }}')

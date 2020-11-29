@@ -1,0 +1,19 @@
+dbrp "sysmetricsdb"."autogen"
+
+batch
+    |query('''
+        SELECT mean("usage_active")
+        FROM "sysmetricsdb"."autogen"."cpu"
+        WHERE "cpu" != 'cpu-total'
+    ''')
+        .period(1m)
+        .every(1m)
+        .groupBy('host', 'cpu')
+    |alert()
+        .message('Host: {{ index .Tags "host" }} has high cpu usage: {{ index .Fields "mean" }}')
+        .warn(lambda: "mean" > 75.0)
+        .crit(lambda: "mean" > 85.0)
+        .alerta()
+            .resource('{{ index .Tags "host" }}/{{ index .Tags "cpu" }}')
+            .event('cpu overload')
+            .value('{{ index .Fields "mean" }}')
