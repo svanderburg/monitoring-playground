@@ -48,7 +48,7 @@ rec {
     manifest = builtins.getAttr (builtins.currentSystem) build;
     networkFile = "deployment/DistributedDeployment/network-qemu.nix";
     testScript = ''
-      test2.succeed("sleep 30")
+      test2.succeed("sleep 10")
       test2.succeed("test-cpu-alerts")
       test2.succeed("test-mem-alerts")
     '';
