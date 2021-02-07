@@ -3,6 +3,7 @@
 , officialRelease ? false
 , systems ? [ "i686-linux" "x86_64-linux" ]
 , nix-processmgmt ? { outPath = ../nix-processmgmt; rev = 1234; }
+, nix-processmgmt-services ? { outPath = ../nix-processmgmt-services; rev = 1234; }
 }:
 
 let
@@ -36,7 +37,7 @@ rec {
         networkFile = "deployment/DistributedDeployment/network-qemu.nix";
         distributionFile = "deployment/DistributedDeployment/distribution-minimal.nix";
         extraParams = {
-          inherit nix-processmgmt;
+          inherit nix-processmgmt nix-processmgmt-services;
           useStreamTasks = true;
         };
       }

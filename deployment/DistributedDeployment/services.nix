@@ -7,14 +7,15 @@
 , forceDisableUserChange ? false
 , processManager ? "systemd"
 , nix-processmgmt ? ../../../nix-processmgmt
+, nix-processmgmt-services ? ../../../nix-processmgmt-services
 , useStreamTasks ? true
 }:
 
 let
   ids = if builtins.pathExists ./ids.nix then (import ./ids.nix).ids else {};
 
-  sharedConstructors = import "${nix-processmgmt}/examples/service-containers-agnostic/constructors.nix" {
-    inherit pkgs stateDir logDir runtimeDir cacheDir tmpDir forceDisableUserChange processManager ids;
+  sharedConstructors = import "${nix-processmgmt-services}/service-containers-agnostic/constructors.nix" {
+    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir tmpDir forceDisableUserChange processManager ids;
   };
 
   constructors = import ../top-level/constructors.nix {
