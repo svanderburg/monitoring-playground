@@ -4,6 +4,7 @@
 , runtimeDir ? "${stateDir}/run"
 , cacheDir ? "${stateDir}/cache"
 , spoolDir ? "${stateDir}/spool"
+, libDir ? "${stateDir}/lib"
 , tmpDir ? (if stateDir == "/var" then "/tmp" else "${stateDir}/tmp")
 , forceDisableUserChange ? false
 , processManager ? "systemd"
@@ -16,7 +17,7 @@ let
   ids = if builtins.pathExists ./ids.nix then (import ./ids.nix).ids else {};
 
   sharedConstructors = import "${nix-processmgmt-services}/service-containers-agnostic/constructors.nix" {
-    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir spoolDir tmpDir forceDisableUserChange processManager ids;
+    inherit nix-processmgmt pkgs stateDir logDir runtimeDir cacheDir spoolDir libDir tmpDir forceDisableUserChange processManager ids;
   };
 
   constructors = import ../top-level/constructors.nix {
