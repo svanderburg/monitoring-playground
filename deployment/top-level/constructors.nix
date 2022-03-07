@@ -35,7 +35,7 @@ in
 
   alerting-kapacitor = import ../pkgs/alerting-kapacitor {
     inherit createManagedProcess stateDir;
-    inherit (pkgs) stdenv writeTextFile kapacitor;
+    inherit (pkgs) stdenv lib writeTextFile kapacitor;
   };
 
   alertadb = import ../pkgs/alertadb {
@@ -43,8 +43,7 @@ in
   };
 
   simple-alerta-server = import ../pkgs/simple-alerta-server {
-    inherit (pkgs) stdenv writeTextFile;
-    inherit (pkgs.python3Packages) alerta-server;
+    inherit (pkgs) stdenv lib writeTextFile alerta-server;
     inherit createManagedProcess;
   };
 

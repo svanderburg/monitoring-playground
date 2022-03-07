@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, writeTextFile, kapacitor, stateDir}:
+{createManagedProcess, stdenv, lib, writeTextFile, kapacitor, stateDir}:
 
 { instanceSuffix ? "", instanceName ? "kapacitor${instanceSuffix}"
 , hostName ? "localhost"
@@ -40,13 +40,13 @@ import ../kapacitor {
       [storage]
         boltdb = "${dataDir}/kapacitor.db"
 
-      ${stdenv.lib.optionalString (loadDirectory != null) ''
+      ${lib.optionalString (loadDirectory != null) ''
         [load]
           enabled = true
           dir = "${loadDirectory}"
       ''}
 
-      ${stdenv.lib.optionalString (defaultDatabase != null) ''
+      ${lib.optionalString (defaultDatabase != null) ''
         [[influxdb]]
           name = "default"
           enabled = true
@@ -56,7 +56,7 @@ import ../kapacitor {
           password = "${defaultDatabase.influxdbPassword}"
       ''}
 
-      ${stdenv.lib.optionalString (alerta-server != null) ''
+      ${lib.optionalString (alerta-server != null) ''
         [alerta]
           enabled = true
           url = "http://${alerta-server.target.properties.hostname}:${toString alerta-server.port}"

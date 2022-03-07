@@ -1,4 +1,4 @@
-{createManagedProcess, stdenv, writeTextFile, alerta-server}:
+{createManagedProcess, stdenv, lib, writeTextFile, alerta-server}:
 { instanceSuffix ? "", instanceName ? "alerta-server${instanceSuffix}"
 , port
 , bindIP ? "0.0.0.0"
@@ -8,7 +8,7 @@
 
 let
   allCorsOrigins = corsOrigins
-    ++ stdenv.lib.optional (alerta-webui != null && alerta-webui.targets != []) "http://${alerta-webui.target.properties.hostname}${stdenv.lib.optionalString (alerta-webui.target.container.port != 80) (":" + (toString alerta-webui.target.container.port))}";
+    ++ lib.optional (alerta-webui != null && alerta-webui.targets != []) "http://${alerta-webui.target.properties.hostname}${lib.optionalString (alerta-webui.target.container.port != 80) (":" + (toString alerta-webui.target.container.port))}";
 in
 import ../alerta-server {
   inherit createManagedProcess alerta-server;
@@ -17,7 +17,7 @@ import ../alerta-server {
   configFile = writeTextFile {
     name = "alertad.conf";
     text = ''
-      CORS_ORIGINS = [ ${stdenv.lib.concatMapStringsSep ", " (corsOrigin: "\"${corsOrigin}\"") allCorsOrigins} ]
+      CORS_ORIGINS = [ ${lib.concatMapStringsSep ", " (corsOrigin: "\"${corsOrigin}\"") allCorsOrigins} ]
       DATABASE_URL = 'postgresql://${alertadb.postgresqlUsername}:${alertadb.postgresqlPassword}@${alertadb.target.properties.hostname}/${alertadb.name}'
       DATABASE_NAME = '${alertadb.name}'
     '';
