@@ -36,8 +36,9 @@ rec {
     };
   };
 
-  postgresql = sharedConstructors.postgresql {
+  postgresql = sharedConstructors.simplePostgresql {
     type = processType;
+    enableTCPIP = true;
     properties = {
       requiresUniqueIdsFor = [ "uids" "gids" ];
       timeout = 20;
@@ -48,6 +49,7 @@ rec {
     type = processType;
     serverAdmin = "root@localhost";
     documentRoot = "${stateDir}/www";
+    port = if forceDisableUserChange then 8080 else 80;
     properties = {
       requiresUniqueIdsFor = [ "uids" "gids" ];
     };

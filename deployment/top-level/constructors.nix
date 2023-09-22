@@ -52,12 +52,10 @@ in
   };
 
   cputestscript = import ../pkgs/cputestscript {
-    inherit (pkgs) stdenv writeScriptBin influxdb jq;
-    inherit (pkgs.python3Packages) alerta;
+    inherit (pkgs) stdenv writeScriptBin influxdb jq alerta;
   };
 
   memtestscript = import ../pkgs/memtestscript {
-    inherit (pkgs) stdenv writeScriptBin influxdb jq;
-    inherit (pkgs.python3Packages) alerta;
+    inherit (pkgs) stdenv writeScriptBin influxdb jq alerta;
   };
 }
